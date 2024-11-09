@@ -1,7 +1,7 @@
 #ifndef PIXEL_H
 #define PIXEL_H
 
-#include<inttypes.h>
+#include <stdint.h.>
 
 struct pixel
 {

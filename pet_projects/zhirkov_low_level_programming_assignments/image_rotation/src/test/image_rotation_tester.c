@@ -13,13 +13,13 @@ bool test_image_rotation (
 {
 	char* temporary_image_filename = "temporary_image.bmp";
 	uint_fast8_t internal_error_code = 0;
-	enum processing_status status = rotate_image( 
+	enum program_execution_status status = rotate_image(
 		source_image_filename, 
 		temporary_image_filename, 
 		&internal_error_code 
 	);
 	
-	if ( status != PROCESSING_STATUS_PROCESSING_FINISHED_SUCCESSFULLY )
+	if (status != PROGRAM_EXECUTION_STATUS_SUCCESS )
 		return false;
 	
 	if ( !are_files_binary_similar( temporary_image_filename, expected_rotated_image_filename ) )

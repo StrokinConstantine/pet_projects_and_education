@@ -51,7 +51,8 @@ add_executable(image-transformer ${SOURCES}
         include/image/bmp/bmp_header_constants.h
         include/constants.h
         include/image/bmp/bmp_utilities.h
-        src/image/bmp/bmp_utilities.c)
+        src/image/bmp/bmp_utilities.c
+        include/image/image_file_formats.h)
 
 # Configure sanitizers based on the build type
 if(CMAKE_BUILD_TYPE STREQUAL "ASan")

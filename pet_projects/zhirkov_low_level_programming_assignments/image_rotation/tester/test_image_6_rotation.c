@@ -9,14 +9,14 @@ int main()
 {	
 	uint_fast8_t internal_error_code = 0;
 
-	enum processing_status status = 
+	enum program_execution_status status =
 	rotate_image(  
 		"tester/bmp_test_images/bmp_test_image_6/wrong_height_and_width_image.bmp"  , 
 		" ", 
 		&internal_error_code 
 	);
 
-	if ( status == PROCESSING_STATUS_PROCESSING_FAILED_WHILE_CONVERTING_FILE_TO_STRUCT_IMAGE 
+	if (status == PROGRAM_EXECUTION_STATUS_ERROR_WHILE_CONVERTING_IMAGE_FILE_TO_STRUCT_IMAGE
 	&& internal_error_code == FILE_READ_STATUS_EXPECTED_PIXEL_DATA_OF_BMP_FILE_CROSSES_END_OF_FILE )
 		return 0;
   return 1;

@@ -44,3 +44,29 @@ bool are_files_binary_similar(const char* filename_1, const char* filename_2)
     fclose(f2);
     return true;
 }
+
+enum image_file_extension_status get_image_file_format(const char *filename, enum image_file_formats* image_format )
+{
+    const char *dot = strrchr(filename, '.');
+
+    if ( !dot )
+        return IMAGE_FILE_EXTENSION_STATUS_INVALID_EXTENSION; // No extension found
+
+
+
+    if ( strcmp( ".bmp", dot ) == 0 )
+    {
+        *image_format = IMAGE_FILE_FORMATS_BMP;
+        return IMAGE_FILE_EXTENSION_STATUS_VALID_EXTENSION;
+    }
+
+    if ( strcmp( ".png", dot ) == 0 )
+    {
+        *image_format = IMAGE_FILE_FORMATS_PNG;
+        return IMAGE_FILE_EXTENSION_STATUS_VALID_EXTENSION;
+    }
+
+
+    return IMAGE_FILE_EXTENSION_STATUS_INVALID_EXTENSION;
+}
+

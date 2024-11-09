@@ -7,6 +7,7 @@
 #include "image/image.h"
 #include "image/bmp/bmp_utilities.h"
 #include "files_handling/file_utilities.h"
+#include "image/image_file_formats.h"
 
 extern const int_fast8_t PIXEL_SIZE_IN_BYTES;
 
@@ -27,6 +28,53 @@ static bool validate_bmp_header_bi_color_used( const uint32_t bi_color_used );
 static bool validate_bmp_header_bi_important_colors( const uint32_t bi_important_colors );
 
 static enum file_read_status validate_bmp_header( const struct bmp_header* const );
+
+
+
+
+
+
+enum file_read_status opened_file_to_struct_image( const char* source_image_filename,
+        FILE* const input_bmp_file,
+        struct image* const output_image
+        )
+{
+
+    static enum file_read_status ( *opened_file_to_struct_image_handlers[2] )(
+            FILE *const input_file,
+            struct image *const output_image ) =
+            {
+                    [IMAGE_FILE_FORMATS_BMP] =
+                    opened_bmp_file_to_struct_image,
+                    [IMAGE_FILE_FORMATS_PNG] =
+                    NULL // to do
+            };
+
+    // Open source image file
+  //  FILE* source_image_file = fopen( source_image_filename, "rb" );
+  //  if ( source_image_file == NULL )
+      //  return PROGRAM_EXECUTION_STATUS_ERROR_WHILE_OPENING_SOURCE_IMAGE_FILE;
+    //struct image source_image = { 0 };
+
+    enum image_file_formats input_file_format;
+    enum image_file_extension_status input_file_extension_status = get_image_file_format(source_image_filename, &input_file_format );
+
+    if (input_file_extension_status != IMAGE_FILE_EXTENSION_STATUS_VALID_EXTENSION )
+    {
+       // fclose( source_image_file );
+        //   *internal_error_code = input_file_extension_status;
+        return FILE_READ_STATUS_UNKNOWN_FILE_EXTENSION;
+    }
+
+    return opened_file_to_struct_image_handlers[input_file_format]( input_bmp_file, output_image );
+
+}
+
+
+
+
+
+
 
 enum file_read_status opened_bmp_file_to_struct_image(
     FILE* const input_bmp_file,

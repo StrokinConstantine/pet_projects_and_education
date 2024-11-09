@@ -8,6 +8,8 @@
 #include "image/image.h"
 #include "image/pixel.h"
 #include "image/bmp/bmp_utilities.h"
+#include "image/image_file_formats.h"
+#include "files_handling/file_utilities.h"
 
 extern const int_fast8_t PIXEL_SIZE_IN_BYTES;
 
@@ -28,17 +30,95 @@ extern const uint32_t BMP_HEADER_BI_IMPORTANT_COLORS;
 static void fill_bmp_header( struct bmp_header* const header, const uint32_t bi_width, const uint32_t bi_height);
 
 
-enum file_write_status struct_image_to_bmp_opened_file (FILE* const out, const struct image* const source_image )
+
+enum file_write_status struct_image_to_opened_file (
+        const char* filename,
+        FILE *const output_file,
+        const struct image* const input_image
+)
+{
+
+
+//
+//    static enum file_write_status ( *struct_image_to_opened_file_handlers[2] )(
+//            FILE* const output_file,
+//            const struct image* const input_image ) =
+//            {
+//                    [IMAGE_FILE_FORMATS_BMP] =
+//                    struct_image_to_bmp_opened_file,
+//                    [IMAGE_FILE_FORMATS_PNG] =
+//                    NULL // to do
+//            };
+//
+//    FILE* source_image_file = fopen( source_image_filename, "rb" );
+//    if ( source_image_file == NULL )
+//        return PROGRAM_EXECUTION_STATUS_ERROR_WHILE_OPENING_SOURCE_IMAGE_FILE;
+//    struct image source_image = { 0 };
+//
+//
+//
+//   // enum image_file_formats output_file_format;
+//  //  enum image_file_extension_status output_file_extension_status = get_image_file_format(rotated_image_filename, &output_file_format );
+//
+//    if (output_file_extension_status != IMAGE_FILE_EXTENSION_STATUS_VALID_EXTENSION )
+//    {
+//        fclose( source_image_file );
+//        return PROGRAM_EXECUTION_STATUS_UNKNOWN_ROTATED_IMAGE_FILE_EXTENSION;
+//    }
+
+
+    static enum file_write_status ( *struct_image_to_opened_file_handlers[2] )(
+            FILE* const output_file,
+            const struct image* const input_image ) =
+            {
+                    [IMAGE_FILE_FORMATS_BMP] =
+                    struct_image_to_bmp_opened_file,
+                    [IMAGE_FILE_FORMATS_PNG] =
+                    NULL // to do
+            };
+
+    enum image_file_formats output_file_format;
+    enum image_file_extension_status output_file_extension_status = get_image_file_format( filename, &output_file_format );
+
+
+    if (output_file_extension_status != IMAGE_FILE_EXTENSION_STATUS_VALID_EXTENSION )
+    {
+        // fclose( source_image_file );
+        //   *internal_error_code = input_file_extension_status;
+        return FILE_WRITE_STATUS_UNKNOWN_FILE_EXTENSION;
+    }
+
+    return struct_image_to_opened_file_handlers[output_file_format]( output_file, input_image );
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+enum file_write_status struct_image_to_bmp_opened_file (FILE* const output_file, const struct image* const input_image )
 {  
-	const size_t padding = (4 - (source_image->width * sizeof( struct pixel )  ) % 4) % 4;
-	//const size_t padded_row_size = (source_image->width * sizeof( struct pixel ) + padding);
-	//const size_t pixel_array_size = padded_row_size * source_image->height;
+	const size_t padding = (4 - (input_image->width * sizeof( struct pixel )  ) % 4) % 4;
+	//const size_t padded_row_size = (input_image->width * sizeof( struct pixel ) + padding);
+	//const size_t pixel_array_size = padded_row_size * input_image->height;
 
 	uint8_t bmp_file_header[ sizeof(struct bmp_header) ] = {0};  
   
 	struct bmp_header header;
 
-    fill_bmp_header( &header, source_image->width, source_image->height);
+    fill_bmp_header(&header, input_image->width, input_image->height);
 
 	// Fill header data
 //	header.signature = BMP_HEADER_SIGNATURE;
@@ -46,8 +126,8 @@ enum file_write_status struct_image_to_bmp_opened_file (FILE* const out, const s
 //	header.reserved = BMP_HEADER_RESERVED;
 //	header.data_offset = BMP_HEADER_DATA_OFFSET;
 //	header.bi_size = BMP_HEADER_BI_SIZE;
-//	header.bi_width = source_image->width;
-//	header.bi_height = source_image->height;
+//	header.bi_width = input_image->width;
+//	header.bi_height = input_image->height;
 //	header.bi_planes = BMP_HEADER_BI_PLANES;
 //	header.bi_bit_count = BMP_HEADER_BI_BIT_COUNT;
 //	header.bi_compression = BMP_HEADER_BI_COMPRESSION;
@@ -59,24 +139,24 @@ enum file_write_status struct_image_to_bmp_opened_file (FILE* const out, const s
 
 	memcpy(bmp_file_header, &header, sizeof(header));  
 
-	if ( fwrite( bmp_file_header, sizeof(uint8_t), BMP_HEADER_DATA_OFFSET, out ) != BMP_HEADER_DATA_OFFSET )
-		return FILE_WRITE_ERROR;
+	if ( fwrite(bmp_file_header, sizeof(uint8_t), BMP_HEADER_DATA_OFFSET, output_file ) != BMP_HEADER_DATA_OFFSET )
+		return FILE_WRITE_STATUS_UNABLE_TO_WRITE_IMAGE_TO_BMP_FILE;
 
     // Write pixel array to the output file  
-    for (uint64_t j = 0; j < source_image->height; j++)
+    for (uint64_t j = 0; j < input_image->height; j++)
 	{  
-		for (uint64_t i = 0; i < source_image->width; i++)
+		for (uint64_t i = 0; i < input_image->width; i++)
 		{  
-			struct pixel px = source_image->data[(source_image->height - 1 - j) * source_image->width + i];
-            fwrite( &px, sizeof(struct pixel), 1, out );  
+			struct pixel px = input_image->data[(input_image->height - 1 - j) * input_image->width + i];
+            fwrite(&px, sizeof(struct pixel), 1, output_file );
         } 
         // Padding
         uint8_t zeros[3] = {0, 0, 0};  
         if ( padding > 0 ) 
-            fwrite( zeros, sizeof(uint8_t), padding, out);  
+            fwrite(zeros, sizeof(uint8_t), padding, output_file);
     }  
 	
-    return FILE_WRITE_OK;  
+    return FILE_WRITE_STATUS_SUCCESS;
 }
 
 static void fill_bmp_header( struct bmp_header* const header, const uint32_t bi_width, const uint32_t bi_height )
