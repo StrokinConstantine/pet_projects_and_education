@@ -16,13 +16,4 @@ enum image_rotation_status get_image_rotated_counterclockwise(
         double angle
 );
 
-
-
-
-enum image_rotation_status
-    get_image_turned_90_degrees_counterclockwise(
-        const struct image* const,
-        struct image* const
-);
-
 #endif // STRUCT_IMAGE_ROTATION_H

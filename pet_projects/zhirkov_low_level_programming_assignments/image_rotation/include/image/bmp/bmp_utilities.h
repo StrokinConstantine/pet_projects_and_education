@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-int_fast8_t bmp_image_width_padding_in_bytes( const uint_fast64_t bmp_image_width );
+uint_fast8_t bmp_image_width_padding_in_bytes( const uint_fast64_t bmp_image_width );
 
 size_t bmp_image_padded_pixel_array_size_in_bytes( const uint32_t bi_width, const uint32_t bi_height );
 

@@ -1,16 +1,12 @@
-#include "../../include/image/image.h"
-#include <stdio.h>
+#include "image/image.h"
 #include <inttypes.h>
 #include <malloc.h>
 #include <image/pixel.h>
 
-enum image_creation_status
-
-
-create_image(
-	struct image* const image_pointer, 
-	const uint_fast64_t width,
-	const uint_fast64_t height
+enum image_creation_status create_image(
+    struct image* const image_pointer,
+        const uint_fast64_t width,
+        const uint_fast64_t height
 )
 {
     image_pointer->data = NULL;
