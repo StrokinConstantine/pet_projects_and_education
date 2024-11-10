@@ -7,10 +7,18 @@
 /Makefile
 
 # CMake generated files
+/Testing
 *.cmake
 *.dir/
 
 # Binary and object files
+image-transformer
+test_1
+test_2
+test_3
+test_4
+test_5
+test_6
 *.o
 *.a
 *.so
