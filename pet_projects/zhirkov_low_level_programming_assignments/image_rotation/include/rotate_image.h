@@ -1,7 +1,7 @@
 #ifndef ROTATE_IMAGE_H
 #define ROTATE_IMAGE_H
 
-#include <stdint.h.>
+#include <stdint.h>
 
 enum program_execution_status
 {
