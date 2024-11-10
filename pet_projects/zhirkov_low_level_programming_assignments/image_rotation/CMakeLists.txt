@@ -3,24 +3,18 @@ cmake_minimum_required(VERSION 3.12)
 # Project name
 project(assignment_image_rotation C)
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Wshadow ")
-# -Werror
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra -Wpedantic -Wshadow ")
+
 include_directories( GLOB_RECURSE ${PROJECT_SOURCE_DIR}/include)
 
-
 set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
-
-
-#file()
 
 file(GLOB_RECURSE SOURCES "src/*.c")
 
 # Create a library from the source files
 add_library(library_for_tests ${SOURCES})
 
-
 message(STATUS "Source files: ${SOURCES}")
-
 enable_testing()
 
 # Tests
@@ -47,12 +41,7 @@ add_test(NAME TEST_5 COMMAND test_5)
 add_test(NAME TEST_6 COMMAND test_6)
 
 # Main program
-add_executable(image-transformer ${SOURCES}
-        include/image/bmp/bmp_header_constants.h
-        include/constants.h
-        include/image/bmp/bmp_utilities.h
-        src/image/bmp/bmp_utilities.c
-        include/image/image_file_formats.h)
+add_executable(image-transformer ${SOURCES})
 
 # Configure sanitizers based on the build type
 if(CMAKE_BUILD_TYPE STREQUAL "ASan")
