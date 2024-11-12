@@ -1,0 +1,17 @@
+1
+programming = building pyramid of abstractions
+A model of computation = is a set of basic operations ( building blocks ) and their respective costs ( as integers )
+Most models of computation are also abstract machines ( = hypothetical computer, like the Turing machine, Church's lambda calculus ), whose instructions correspond to the model’s basic operations.
+Computer architecture is high level description, compared to the lowest level description of CM.
+
+von Neumann architecture
+CPU <-> COMMON BUS <-> MEM
+CPU = CU + ALU, CU fetches instructions from memory
+features:
+	* memory stores only bits;
+	* memory stores code and data, they have no differences in memory, both are bit strings;
+	* memory is organized into cells with addresses ( modern computers take 1 byte as 1 memory cell );
+	* execution of program instructions sequential unless jump instruction;
+	
+Assembly language for a chosen prosessor is a PL consisting of mnemonics for each binary encoded instruction ( machine code ).
+
