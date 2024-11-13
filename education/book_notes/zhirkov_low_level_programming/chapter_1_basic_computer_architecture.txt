@@ -14,4 +14,8 @@ features:
 	* execution of program instructions sequential unless jump instruction;
 	
 Assembly language for a chosen prosessor is a PL consisting of mnemonics for each binary encoded instruction ( machine code ).
-
+An architecture does not always define a precise instruction set, unlike a CM.
+Memory state and registers state fully describe CPU state. Instructions = effects on memory and registers.
+bottleneck
+Intel 64 architecture = x86_64 = AMD64
+Processors can operate in a number of modes: real mode, protected, victual, long, etc.
