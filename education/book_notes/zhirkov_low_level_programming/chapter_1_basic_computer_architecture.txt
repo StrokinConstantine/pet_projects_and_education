@@ -11,7 +11,7 @@ features:
 	* memory stores only bits;
 	* memory stores code and data, they have no differences in memory, both are bit strings;
 	* memory is organized into cells with addresses ( modern computers take 1 byte as 1 memory cell );
-	* execution of program instructions sequential unless jump instruction;
+	* execution of program instructions sequential unless jump instruction.
 	
 Assembly language for a chosen prosessor is a PL consisting of mnemonics for each binary encoded instruction ( machine code ).
 An architecture does not always define a precise instruction set, unlike a CM.
@@ -19,3 +19,12 @@ Memory state and registers state fully describe CPU state. Instructions = effect
 bottleneck
 Intel 64 architecture = x86_64 = AMD64
 Processors can operate in a number of modes: real mode, protected, victual, long, etc.
+Intel 64 architecture extensions of von Neumann's architecture:
+	* registers = memory cells placed directly on CPU chip. Register accesses do not use the bus. The response time is quite small;
+	* hardware stack. Implements abstraction of stack on top of memory;
+	* interrupts. Allows one to change program execution order based on events external to the program itself ( some registers are saved );
+	* protection rings. A CPU is always in a state corresponding to one of the protection rings. Each ring defines a set of allowed instructions. Zero-th ring allows executing any instruction from CPU's instruction set.
+	* virtual memory. An abstraction over physical memory. It helps to isolate program and to distribute memory between programs in a safer and more effective way.
+Some extensions are not directly accessible by a programmer ( e.g., caches or shadow registers ).
+Do not use search engines for instruction descriptions.
+Most of the time the working set of memory cells should be small enough, so CPU can work with registers.
