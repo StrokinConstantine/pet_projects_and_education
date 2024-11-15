@@ -27,4 +27,11 @@ Intel 64 architecture extensions of von Neumann's architecture:
 	* virtual memory. An abstraction over physical memory. It helps to isolate program and to distribute memory between programs in a safer and more effective way.
 Some extensions are not directly accessible by a programmer ( e.g., caches or shadow registers ).
 Do not use search engines for instruction descriptions.
-Most of the time the working set of memory cells should be small enough, so CPU can work with registers.
+Most of the time the working set of memory cells should be small enough, so CPU can work with registers. After we work with registers for some time, the results will be flushed into memory. 
+Registers are based on transistors, while main memory uses condensers.
+Locality of reference:
+	* temporal locality. Means that accesses to one address are likely to be close in time.
+	* spatial locality. Means that after accessing an address X the next memory access will be likely to be close to X ( X - 16, X + 30 ).
+	
+General purpose registers: r0, ..., r15. Registers do not have addresses!
+You usually do not want to use rsp and rbp because of their very special meaning.
