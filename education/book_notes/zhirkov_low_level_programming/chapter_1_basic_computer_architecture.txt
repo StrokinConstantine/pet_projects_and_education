@@ -35,3 +35,8 @@ Locality of reference:
 	
 General purpose registers: r0, ..., r15. Registers do not have addresses!
 You usually do not want to use rsp and rbp because of their very special meaning.
+Suffixes for addressing a part of a register:
+	* d = double word = 4 bytes
+	* w = word
+	* b = byte
+For example: r7b (lowest byte of r7), r3w, r0d ( lowest 4 bytes of r0 ).
