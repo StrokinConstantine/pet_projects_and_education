@@ -1,0 +1,10 @@
+#ifndef IMAGE_FILE_FORMATS_H
+#define IMAGE_FILE_FORMATS_H
+
+enum image_file_formats
+{
+    IMAGE_FILE_FORMATS_BMP = 0,
+    IMAGE_FILE_FORMATS_PNG,
+};
+
+#endif //IMAGE_FILE_FORMATS_H

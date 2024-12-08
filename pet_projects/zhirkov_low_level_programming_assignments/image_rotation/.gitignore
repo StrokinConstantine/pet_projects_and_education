@@ -1,40 +1,4 @@
-# Build files
-/build/
-/cmake-build-debug/
-/CMakeFiles/
-/CMakeCache.txt
-/cmake_install.cmake
-/Makefile
-
-# CMake generated files
-/Testing
-*.cmake
-*.dir/
-
-# Binary and object files
-image-transformer
-test_1
-test_2
-test_3
-test_4
-test_5
-test_6
-*.o
-*.a
-*.so
-*.exe
-
-# User-specific files
-*.log
-*.tmp
-
-# IDE specific
-.idea/
-.vscode/
-
-# macOS specific files
-.DS_Store
-
-# Windows specific files
-Thumbs.db
-desktop.ini
+/build
+/out
+/report.xml
+*.html

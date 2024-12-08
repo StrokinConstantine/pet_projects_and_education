@@ -1,67 +1,54 @@
 cmake_minimum_required(VERSION 3.12)
 
-# Project name
-project(assignment_image_rotation C)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra -Wpedantic -Wshadow ")
+project(image-transformer LANGUAGES C)
 
-include_directories( GLOB_RECURSE ${PROJECT_SOURCE_DIR}/include)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
+if(CMAKE_C_COMPILER_ID STREQUAL GNU)
+    set(CMAKE_CONFIGURATION_TYPES Debug Release ASan LSan UBSan)
+elseif(CMAKE_C_COMPILER_ID MATCHES Clang)
+    set(CMAKE_CONFIGURATION_TYPES Debug Release ASan LSan MSan UBSan)
+elseif(MSVC)
+    set(CMAKE_CONFIGURATION_TYPES Debug Release ASan)
+endif()
 
-file(GLOB_RECURSE SOURCES "src/*.c")
+if(CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE IN_LIST CMAKE_CONFIGURATION_TYPES)
+    message(FATAL_ERROR "Unexpected build type ${CMAKE_BUILD_TYPE}, possible values: ${CMAKE_CONFIGURATION_TYPES}")
+endif()
 
-# Create a library from the source files
-add_library(library_for_tests ${SOURCES})
+if(CMAKE_C_COMPILER_ID STREQUAL GNU OR CMAKE_C_COMPILER_ID MATCHES Clang)
+    set(CMAKE_C_FLAGS       "-std=c17 -pedantic -Wall -Werror -ggdb")
+    set(CMAKE_C_FLAGS_ASAN  "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address -fno-optimize-sibling-calls -fno-omit-frame-pointer")
+    set(CMAKE_C_FLAGS_LSAN  "${CMAKE_C_FLAGS_DEBUG} -fsanitize=leak")
+    set(CMAKE_C_FLAGS_MSAN  "${CMAKE_C_FLAGS_DEBUG} -fsanitize=memory -fno-optimize-sibling-calls -fno-omit-frame-pointer")
+    set(CMAKE_C_FLAGS_UBSAN "${CMAKE_C_FLAGS_DEBUG} -fsanitize=undefined")
+elseif(MSVC)
+    set(CMAKE_C_FLAGS       "/std:c17 /W4 /WX")
+    set(CMAKE_C_FLAGS_ASAN  "${CMAKE_C_FLAGS_DEBUG} /fsanitize=address")
+    set(CMAKE_EXE_LINKER_FLAGS_ASAN "/debug /INCREMENTAL:NO")
+endif()
 
-message(STATUS "Source files: ${SOURCES}")
-enable_testing()
+if(WIN32)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+endif()
 
-# Tests
-add_executable(test_1 "tester/test_image_1_rotation.c")
-add_executable(test_2 "tester/test_image_2_rotation.c")
-add_executable(test_3 "tester/test_image_3_rotation.c")
-add_executable(test_4 "tester/test_image_4_rotation.c")
-add_executable(test_5 "tester/test_image_5_rotation.c")
-add_executable(test_6 "tester/test_image_6_rotation.c")
+find_program(CLANG_TIDY clang-tidy)
+message(STATUS "Clang-tidy: ${CLANG_TIDY}")
+if(CLANG_TIDY)
+    file(STRINGS clang-tidy-checks.txt clang_tidy_checks)
+    list(JOIN clang_tidy_checks "," clang_tidy_checks_str)
+    set(CMAKE_C_CLANG_TIDY
+        ${CLANG_TIDY}
+        -header-filter=${CMAKE_SOURCE_DIR}
+        -checks=${clang_tidy_checks_str}
+        -warnings-as-errors=*
+    )
+endif()
 
-target_link_libraries(test_1 library_for_tests)
-target_link_libraries(test_2 library_for_tests)
-target_link_libraries(test_3 library_for_tests)
-target_link_libraries(test_4 library_for_tests)
-target_link_libraries(test_5 library_for_tests)
-target_link_libraries(test_6 library_for_tests)
+add_subdirectory(solution)
 
-# Register tests with CTest
-add_test(NAME TEST_1 COMMAND test_1)
-add_test(NAME TEST_2 COMMAND test_2)
-add_test(NAME TEST_3 COMMAND test_3)
-add_test(NAME TEST_4 COMMAND test_4)
-add_test(NAME TEST_5 COMMAND test_5)
-add_test(NAME TEST_6 COMMAND test_6)
-
-# Main program
-add_executable(image-transformer ${SOURCES})
-
-# Configure sanitizers based on the build type
-if(CMAKE_BUILD_TYPE STREQUAL "ASan")
-    message(STATUS "Using AddressSanitizer")
-    set_target_properties(image-transformer PROPERTIES
-        COMPILE_FLAGS "-fsanitize=address"
-        LINK_FLAGS "-fsanitize=address")
-elseif(CMAKE_BUILD_TYPE STREQUAL "LSan")
-    message(STATUS "Using LeakSanitizer")
-    set_target_properties(image-transformer PROPERTIES
-        COMPILE_FLAGS "-fsanitize=leak"
-        LINK_FLAGS "-fsanitize=leak")
-elseif(CMAKE_BUILD_TYPE STREQUAL "MSan")
-    message(STATUS "Using MemorySanitizer")
-    set_target_properties(image-transformer PROPERTIES
-        COMPILE_FLAGS "-fsanitize=memory"
-        LINK_FLAGS "-fsanitize=memory")
-elseif(CMAKE_BUILD_TYPE STREQUAL "UBSan")
-    message(STATUS "Using UndefinedBehaviourSanitizer")
-    set_target_properties(image-transformer PROPERTIES
-        COMPILE_FLAGS "-fsanitize=undefined"
-        LINK_FLAGS "-fsanitize=undefined")
+option(BUILD_TESTING "Enable tests" ON)
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(tester)
 endif()
